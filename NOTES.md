@@ -25,8 +25,10 @@ After installing using `pip install .` inside a virtualenv, the resulting virtua
              ├ functions.py
              └ pyfind.py
 ```
+As indicated by the resulting virtualenv directory structure, the entire package and all of its modules are getting
+installed to the environment's `site-packages` directory.
 
-Running the script produces the following:
+Running the `pyfind` script produces the following:
 ```
 $ pyfind /home/ian/test
 Traceback (most recent call last):
@@ -43,11 +45,27 @@ Traceback (most recent call last):
 ModuleNotFoundError: No module named 'libfind.pyfind'
 ```
 
-Running `import libfind.pyfind` inside a python REPL from outside the project directory produces the same `ModuleNotFoundError`, suggesting that the module cannot be found.
+Running the following in a python REPL from inside the project root results in no such error:
+```
+import libfind.findpath
+import libfind.functions
+import libfind.pyfind
+```
+Which says there is nothing wrong with the file itself that prevents it from being seen by the import functionality.
 
-Running `import libfind.findpath` inside the same python REPL works just fine. So the package and its contained modules are visible to the path/import system.
+Running the following in a python REPL from outside the project root also results in no such error:
+```
+import libfind.findpath
+import libfind.functions
+```
+Which says that the package is in the path, and `pyfind`'s sibling modules are visible on the python path.
 
-As indicated by the resulting virtualenv directory structure, the entire package, including `pyfind.py` is getting installed to the python path.
+Running `import libfind.pyfind` inside a python REPL from outside the project root produces the `ModuleNotFoundError`.
+
+Despite its sibling modules being visible, `libfind.pyfind` is not visible to the import functionality after being
+installed via pip/setuptools.
+
+All of this also happens if the package is installed via `pip install . --user` from outside the virtualenv.
 
 File permissions for `pyfind.py` are no different from its siblings:
 ```
@@ -60,9 +78,17 @@ drwxr-xr-x 1 ian ian  182 Apr 22 19:35 __pycache__
 -rw-r--r-- 1 ian ian 1375 Apr 22 19:35 pyfind.py
 ```
 
-There is no reason `pyfind.py` should not be visible while `findpath.py` and `functions.py` are. 
+There is no obvious reason `pyfind.py` should not be visible while `findpath.py` and `functions.py` are.
 
-Interestingly, running `pyfind` with PyCharm's debugger has it working just fine. Here's the debugger output:
+None of the following makes any difference in the above behaviors:
+ - Running `pyfind` from inside the project root.
+ - Changing the name and/or contents of `pyfind.py` and updating the `entry_points` argument in `setup.py` accordingly 
+ - Changing or removing `libfind.__all__`
+ - Using `find_packages()` instead of `['libfind']` in `setup.py`
+ - Removing the `entry_points` argument from `setup.py`
+   - this would obviously stop `venv/bin/pyfind` from existing, but does not make `libfind.pyfind` importable elsewhere.
+
+Interestingly, running `venv/bin/pyfind` with PyCharm's debugger has it working just fine. Here's the debugger output:
 ```
 /home/ian/PycharmProjects/find/venv/bin/python /home/ian/.local/share/JetBrains/Toolbox/apps/PyCharm-P/ch-0/201.6668.115/plugins/python/helpers/pydev/pydevd.py --multiproc --qt-support=auto --client 127.0.0.1 --port 44431 --file /home/ian/PycharmProjects/find/venv/bin/pyfind
 pydev debugger: process 267094 is connecting
@@ -75,5 +101,5 @@ pyfind: error: the following arguments are required: path
 
 Process finished with exit code 2
 ```
-
-The above output shows the expected argparse help output when required arguments are not satisfied.
+The above output shows the expected argparse help output when required arguments are not satisfied, meaning the
+executable is able to see and import `libfind.pyfind`. This may be because the debugger has the project root in its path.
