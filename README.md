@@ -20,7 +20,7 @@ make uninstall
 
 or pip:
 ```
-pip uninstall Find
+pip uninstall libfind
 ```
 
 ## Usage
@@ -98,7 +98,7 @@ True
 datetime.datetime(2020, 4, 21, 4, 8, 51, 196532, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=64800), 'CST'))
 ```
 
-`pip` installs a [command line tool](libfind/deleteme.py) as `find.py` into the default python `bin` path.
+`pip` installs a [command line tool](libfind/pyfind.py) as `pyfind` into the default python `bin` path.
 
 This script can be used in a similar fashion to linux/unix `find`.
 
@@ -106,22 +106,22 @@ Some examples:
 
 ```
 # all files under /path/to/some/dir
-find.py /path/to/some/dir
+pyfind /path/to/some/dir
 
 # also follow links
-find.py -L /path/to/some/dir
+pyfind -L /path/to/some/dir
 
 # plain filename
-find.py /path/to/some/dir --name abc  # case sensitive
-find.py /path/to/some/dir --iname abc  # case insensitive
+pyfind /path/to/some/dir --name abc  # case sensitive
+pyfind /path/to/some/dir --iname abc  # case insensitive
 
 # glob expression
-find.py /path/to/some/dir --name 'ab*'  # case sensitive
-find.py /path/to/some/dir --iname 'ab*'  # case insensitive
+pyfind /path/to/some/dir --name 'ab*'  # case sensitive
+pyfind /path/to/some/dir --iname 'ab*'  # case insensitive
 
 # regex
-find.py /path/to/some/dir --rname '[abc]+'  # case sensitive
-find.py /path/to/some/dir --rname '(?i:[abc]+)'  # case insensitive
+pyfind /path/to/some/dir --rname '[abc]+'  # case sensitive
+pyfind /path/to/some/dir --rname '(?i:[abc]+)'  # case insensitive
 ```
 
 ## Changelog
