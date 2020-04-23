@@ -10,7 +10,7 @@ make install
 
 If `make` is not available, use pip. From the project root:
 ```
-pip install -e .
+pip install . --user
 ```
 
 The package can also be removed using make:
