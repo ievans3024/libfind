@@ -1,5 +1,5 @@
 # Find
-*A python implementation the linux/unix `find` command.*
+*A python implementation of the linux/unix `find` command.*
 
 ## Installation
 
